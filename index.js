@@ -567,10 +567,10 @@ async function scrapeFacebookPost(pageUrl,page) {
 		const calcTime = setInterval(() => {
 			time++;
 		}, 1000);
-		// const browser = await puppeteer.launch();
-		// console.log('launched')
-		// const page = await browser.newPage();
-		// console.log('newPage')
+		 const browser = await puppeteer.launch();
+		 console.log('launched')
+		 const page = await browser.newPage();
+		 console.log('newPage')
 
 		await page.goto(pageUrl, { timeout: 60000 });
 		console.log('opend page')
@@ -607,7 +607,7 @@ async function scrapeFacebookPost(pageUrl,page) {
 }
 
 
-async function PagesPosts(page){
+async function PagesPosts(){
 	try {
 		// const posts = await Pages.find();
 		const posts = await readJson()
@@ -615,15 +615,15 @@ async function PagesPosts(page){
 		
 		// })
 		for (let i = 0; i < posts.length; i++) {
-			await onePost(posts,posts[i],page)		
+			await onePost(posts,posts[i])		
 		}
 	} catch (error) {
 		console.log(error)
 		}
 }
 
-const onePost = async (posts,post,page)=>{
-	const pagePost = await scrapeFacebookPost(post.link,page);
+const onePost = async (posts,post)=>{
+	const pagePost = await scrapeFacebookPost(post.link);
 
 		if(pagePost.post == null || pagePost.post == post.post ){
 			console.log("same",post.name)
@@ -638,8 +638,8 @@ const onePost = async (posts,post,page)=>{
 }
 shedule.scheduleJob("*/5 * * * *", function () {
 // 	// connectDb()
-// 	//PagesPosts();
-	  loginWithCookies();
+	PagesPosts();
+	  // loginWithCookies();
  })
 //PagesPosts();
 // const sendMessageTelegram = (msg) => {
@@ -654,94 +654,94 @@ shedule.scheduleJob("*/5 * * * *", function () {
 // 	});
 // }
 
-async function loginWithCookies() {
-	const browser = await puppeteer.launch({headless: "new"});
-	const page = await browser.newPage();
+// async function loginWithCookies() {
+// 	const browser = await puppeteer.launch({headless: "new"});
+// 	const page = await browser.newPage();
   
-	try {
-	  // Check if cookies file exists
-	  if (fs1.existsSync('cookies.json')) {
-		const cookiesString = fs1.readFileSync('cookies.json', 'utf8');
-		const cookies = JSON.parse(cookiesString);
-		console.log('cookie')
-		// Set saved cookies in the browser
-		await page.setCookie(...cookies);
+// 	try {
+// 	  // Check if cookies file exists
+// 	  if (fs1.existsSync('cookies.json')) {
+// 		const cookiesString = fs1.readFileSync('cookies.json', 'utf8');
+// 		const cookies = JSON.parse(cookiesString);
+// 		console.log('cookie')
+// 		// Set saved cookies in the browser
+// 		await page.setCookie(...cookies);
 		
-		// Navigate to Facebook homepage to check if cookies are valid
-		await page.goto('https://www.facebook.com/');
-		await delayExecution(5000)
-		await page.screenshot({ path: 'withCookies.png' });
-		// Check if user is already logged in
-		const content = await page.waitForSelector('div');
-		console.log(content)
-		const myName = await content.evaluate(el => el.textContent);
-		// Check if login was successful
-		const isLoggedIn = myName.includes('Hussein');
-		if (isLoggedIn) {
-		  console.log('Logged in with saved cookies.');
-		  // Do further actions as a logged-in user
-		  await browseFacebook(page);
-		  return;
-		} else {
-		  console.log('Saved cookies are invalid. Logging in with email and password...');
-		}
-	  }
-  		console.log('facebook')
-	  // Login with email and password
-	  await page.goto('https://www.facebook.com/');
-		console.log('in facebook')
-	  await page.waitForSelector('#email');
-		console.log('waited email')
-	  await page.type('#email', process.env.EMAIL);
-		console.log('typed email')// Replace with your actual email
-	  await page.type('#pass', process.env.PASS); // Replace with your actual password
-	  console.log('typed pass')
-	  await page.screenshot({ path: 'test.png' });
-	  console.log('screen 1')
-	  await page.click('button[name = "login"]');
-		console.log('clicked login')
-	  await page.waitForNavigation();
-	  await delayExecution(5000)
-		console.log('before check login');
-	  await page.screenshot({ path: 'test1.png' });
-		console.log('talen screen test1.png');
-	  const content = await page.waitForSelector('div');
-	  console.log(content)
-	  const myName = await content.evaluate(el => el.textContent);
-	  // Check if login was successful
-	  const isLoggedIn = myName.includes('Hussein');
-		console.log(isLoggedIn,'logged in');
-	  if (isLoggedIn) {
-		console.log('Logged in successfully.');
+// 		// Navigate to Facebook homepage to check if cookies are valid
+// 		await page.goto('https://www.facebook.com/');
+// 		await delayExecution(5000)
+// 		await page.screenshot({ path: 'withCookies.png' });
+// 		// Check if user is already logged in
+// 		const content = await page.waitForSelector('div');
+// 		console.log(content)
+// 		const myName = await content.evaluate(el => el.textContent);
+// 		// Check if login was successful
+// 		const isLoggedIn = myName.includes('Hussein');
+// 		if (isLoggedIn) {
+// 		  console.log('Logged in with saved cookies.');
+// 		  // Do further actions as a logged-in user
+// 		  await browseFacebook(page);
+// 		  return;
+// 		} else {
+// 		  console.log('Saved cookies are invalid. Logging in with email and password...');
+// 		}
+// 	  }
+//   		console.log('facebook')
+// 	  // Login with email and password
+// 	  await page.goto('https://www.facebook.com/');
+// 		console.log('in facebook')
+// 	  await page.waitForSelector('#email');
+// 		console.log('waited email')
+// 	  await page.type('#email', process.env.EMAIL);
+// 		console.log('typed email')// Replace with your actual email
+// 	  await page.type('#pass', process.env.PASS); // Replace with your actual password
+// 	  console.log('typed pass')
+// 	  await page.screenshot({ path: 'test.png' });
+// 	  console.log('screen 1')
+// 	  await page.click('button[name = "login"]');
+// 		console.log('clicked login')
+// 	  await page.waitForNavigation();
+// 	  await delayExecution(5000)
+// 		console.log('before check login');
+// 	  await page.screenshot({ path: 'test1.png' });
+// 		console.log('talen screen test1.png');
+// 	  const content = await page.waitForSelector('div');
+// 	  console.log(content)
+// 	  const myName = await content.evaluate(el => el.textContent);
+// 	  // Check if login was successful
+// 	  const isLoggedIn = myName.includes('Hussein');
+// 		console.log(isLoggedIn,'logged in');
+// 	  if (isLoggedIn) {
+// 		console.log('Logged in successfully.');
   
-		// Save cookies to file
-		const cookies = await page.cookies();
-		fs1.writeFileSync('cookies.json', JSON.stringify(cookies, null, 2));
+// 		// Save cookies to file
+// 		const cookies = await page.cookies();
+// 		fs1.writeFileSync('cookies.json', JSON.stringify(cookies, null, 2));
   
-		// Do further actions as a logged-in user
-		await browseFacebook(page);
-	  } else {
-		console.log('Login failed. Please check your email and password.');
-	  }
-	} catch (error) {
-	  console.error('An error occurred:', error);
-	} finally {
-	  await browser.close();
-	}
-  }
+// 		// Do further actions as a logged-in user
+// 		await browseFacebook(page);
+// 	  } else {
+// 		console.log('Login failed. Please check your email and password.');
+// 	  }
+// 	} catch (error) {
+// 	  console.error('An error occurred:', error);
+// 	} finally {
+// 	  await browser.close();
+// 	}
+//   }
   
-  async function browseFacebook(page) {
-	// Example: Perform actions as a logged-in user
-	// await page.goto('https://www.facebook.com/syr.edu1');
-	// await delayExecution(5000)
-	// await page.screenshot({ path: 'test2.png' });
-	// const postSelector = await page.waitForSelector('div[data-pagelet="ProfileTimeline"] .x1iorvi4.x1pi30zi.x1l90r2v.x1swvt13');
-	// console.log("post selectors")
-	// const postContent = await postSelector.evaluate(el => el.textContent);
-	// console.log(postContent)
-	// Perform other actions...
-	await PagesPosts(page);
-  }
+ //  async function browseFacebook(page) {
+	// // Example: Perform actions as a logged-in user
+	// // await page.goto('https://www.facebook.com/syr.edu1');
+	// // await delayExecution(5000)
+	// // await page.screenshot({ path: 'test2.png' });
+	// // const postSelector = await page.waitForSelector('div[data-pagelet="ProfileTimeline"] .x1iorvi4.x1pi30zi.x1l90r2v.x1swvt13');
+	// // console.log("post selectors")
+	// // const postContent = await postSelector.evaluate(el => el.textContent);
+	// // console.log(postContent)
+	// // Perform other actions...
+	// await PagesPosts(page);
+ //  }
   
   // Call the login function
 
